@@ -1,0 +1,27 @@
+PLAYNEXT
+Play video files in order and remember last watched.
+
+Say I have a number of video files in a folder structure like so:
+
+dir/
+  series1/
+    episode1.mkv
+    episode2.mkv
+    episode3.mkv
+  series2/
+    episode1.mkv
+    episode2.mkv
+  series3/
+    episode1.mkv
+    episode2.mkv
+    episode3.mkv
+
+I would like to watch each of these in order. So I 'cd' into 'dir/' and run
+'playnext'. It plays 'series1/episode1.mkv' then exits ('dir/.playnext' file is
+created). Later I decide I want to watch 'series1/episode2.mkv', so I 'cd' into
+'dir/' and run 'playnext' - it plays 'series1/episode2.mkv' (and changes
+'dir/.playnext'). On each 'playnext' the next episode is played.
+
+OPTIONS
+  '-r'  Do not play the next episode, instead play the last one watched.
+
