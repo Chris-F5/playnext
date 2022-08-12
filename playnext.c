@@ -83,7 +83,7 @@ static char *getepisode(const char *path, int *n)
 
     count = scandir(path, &list, NULL, alphasort);
     if(count < 0) return NULL;
-    for(int i = 2; i < count; i++) {
+    for(int i = 0; i < count; i++) {
         if(list[i]->d_name[0] == '.') continue;
         if(list[i]->d_type == DT_DIR) {
             subPath = pathcat(path, list[i]->d_name);
