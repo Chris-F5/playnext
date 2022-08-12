@@ -20,7 +20,7 @@ static int isepisode(const char* fname)
     if(i == -1) return 0;
     fname += i;
     for(int e = 0; e < sizeof(extensions) / sizeof(extensions[0]); e++)
-        if(strcmp(fname, extensions[e])) return 1;
+        if(strcmp(fname, extensions[e]) == 0) return 1;
     return 0;
 }
 
