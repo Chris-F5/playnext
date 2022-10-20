@@ -39,6 +39,7 @@ static int getn(void)
                 exit(1);
         }
     res = fscanf(f, "%d\n", &n);
+    fclose(f);
     if(res == EOF || res < 1) return -1;
     return n;
 }
@@ -55,9 +56,11 @@ static void setn(int n)
     }
     sprintf(str, "%d\n", n);
     if(fwrite(str, strlen(str), 1, f) < 1) {
+        fclose(f);
         fprintf(stderr, "failed to write file (2). '%s'\n", strerror(errno));
         exit(1);
     }
+    fclose(f);
 }
 
 static char *pathcat(const char* a, const char* b)
@@ -92,7 +95,7 @@ static char *getepisode(const char *path, int *n)
             if(episode != NULL) return episode;
         } else {
             if(!isepisode(list[i]->d_name)) continue;
-            if(*n == 0) return pathcat(path, list[i]->d_name);
+            if(*n == 1) return pathcat(path, list[i]->d_name);
             (*n)--;
         }
     }
@@ -121,15 +124,19 @@ int main(int argc, char *argv[])
 
     if(argc == 2 && strcmp(argv[1], "-r") == 0) next = 0;
 
-    n = getn() + next;
+    n = getn();
+    if(n == -1) {
+        n = 0;
+    }
+    n += next;
     checked = n;
     episode = getepisode(".", &checked);
     if(episode) {
+        setn(n);
         printf("PLAYING %s\n", episode);
         play(episode);
         free(episode);
     } else {
         printf("FINISHED\n");
     }
-    setn(n);
 }
