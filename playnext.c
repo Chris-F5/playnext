@@ -35,7 +35,7 @@ static int getn(void)
             case ENOENT:
                 return -1;
             default:
-                fprintf(stderr, "failed to open file. '%s'\n", strerror(errno));
+                fprintf(stderr, "failed to open playnext file: %s\n", strerror(errno));
                 exit(1);
         }
     res = fscanf(f, "%d\n", &n);
@@ -51,13 +51,13 @@ static void setn(int n)
 
     f = fopen(FNAME, "w");
     if(f == NULL) {
-        fprintf(stderr, "failed to write file (1). '%s'\n", strerror(errno));
+        fprintf(stderr, "failed to write file (1): %s\n", strerror(errno));
         exit(1);
     }
     sprintf(str, "%d\n", n);
     if(fwrite(str, strlen(str), 1, f) < 1) {
         fclose(f);
-        fprintf(stderr, "failed to write file (2). '%s'\n", strerror(errno));
+        fprintf(stderr, "failed to write file (2): %s\n", strerror(errno));
         exit(1);
     }
     fclose(f);
@@ -114,15 +114,22 @@ static void play(char* f)
     printf("%s\n", cmd);
 
     if(system(cmd) != 0)
-        fprintf(stderr, "failed to play episode '%s'\n", strerror(errno));
+        fprintf(stderr, "failed to play episode: %s\n", strerror(errno));
 }
 
 int main(int argc, char *argv[])
 {
     int n, checked, next = 1;
-    char *episode;
+    char *episode, *dir;
 
-    if(argc == 2 && strcmp(argv[1], "-r") == 0) next = 0;
+    dir = ".";
+    if(argc >= 2 && strcmp(argv[argc - 1], "-r") == 0) next = 0;
+    if(argc >= 2 && argv[1][0] != '-') dir = argv[1];
+    if(chdir(dir) < 0) {
+      fprintf(stderr, "failed to change into directory '%s': %s\n", dir,
+          strerror(errno));
+      return 0;
+    }
 
     n = getn();
     if(n == -1) {
@@ -139,4 +146,5 @@ int main(int argc, char *argv[])
     } else {
         printf("FINISHED\n");
     }
+    return 0;
 }
